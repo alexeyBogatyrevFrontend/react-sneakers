@@ -1,0 +1,28 @@
+.btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    width: 245px;
+    border-radius: 18px;
+    background: #9dd458;
+    padding: 17px;
+    color: #fff;
+    text-align: center;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    transition: all 0.3s ease-in-out;
+    &:hover {
+        background-color: #a9da6c;
+        img {
+            transition: all 0.3s ease-in-out;
+            -webkit-transform: translateX(-3px);
+            transform: translateX(-3px);
+        }
+    }
+    &:active {
+        background-color: #91d044;
+    }
+}

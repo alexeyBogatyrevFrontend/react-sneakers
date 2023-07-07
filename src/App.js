@@ -1,161 +1,105 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { AppContext } from './context/AppContext'
+import Cart from './components/cart/Cart'
+import Modal from './components/UI/modal/Modal'
+import Header from './components/header/Header'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import Main from './pages/Main'
+import Favorites from './pages/Favorites'
+import Purchases from './pages/Purchases'
 
 const App = () => {
-    return (
-        <div className="wrapper">
-            <header className="header">
-                <div className="container">
-                    <div className="header__wrapper">
-                        <div className="header__item">
-                            <img
-                                width={40}
-                                height={40}
-                                src="/images/logo.png"
-                                alt="logo"
-                            />
-                            <div>
-                                <h3>REACT SNEAKERS</h3>
-                                <p>Магазин лучших кроссовок</p>
-                            </div>
-                        </div>
-                        <div className="header__item">
-                            <ul className="header__list">
-                                <li className="header__list-item">
-                                    <img src="/images/cart.svg" alt="cart" />
+    const [cart, setCart] = useState([])
+    const [favorites, setFavorites] = useState([])
+    const [purchases, setPurchases] = useState([])
+    const [total, setTotal] = useState(0)
+    const [modal, setModal] = useState(false)
 
-                                    <span>1205 руб.</span>
-                                </li>
-                                <li className="header__list-item">
-                                    <img src="/images/user.svg" alt="user" />
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+    // const [check, setCheck] = useState(false)
+
+    const addToCart = (sneaker) => {
+        setCart((prev) => [...prev, sneaker])
+        setTotal((prev) => prev + sneaker.price)
+    }
+
+    const removeFromCart = (sneaker) => {
+        setCart(cart.filter((item) => item.id !== sneaker.id))
+        setTotal((prev) => prev - sneaker.price)
+    }
+
+    const isAddedToCart = (id) => {
+        return cart.some((obj) => obj.id === id)
+    }
+
+    const addToFavorites = (sneaker) => {
+        setFavorites((prev) => [...prev, sneaker])
+    }
+
+    const removeFromFavorites = (sneaker) => {
+        setFavorites(favorites.filter((item) => item.id !== sneaker.id))
+    }
+
+    const isAddedToFavorites = (id) => {
+        return favorites.some((obj) => obj.id === id)
+    }
+
+    return (
+        <AppContext.Provider
+            value={{
+                cart,
+                setCart,
+                favorites,
+                setFavorites,
+                purchases,
+                setPurchases,
+                total,
+                setTotal,
+                isAddedToCart,
+                isAddedToFavorites,
+                addToCart,
+                removeFromCart,
+                addToFavorites,
+                removeFromFavorites,
+            }}
+        >
+            <BrowserRouter>
+                <div className="wrapper">
+                    <Modal modal={modal} setModal={setModal}>
+                        <Cart
+                            setModal={setModal}
+                            removeHandler={removeFromCart}
+                        />
+                    </Modal>
+                    <Header setModal={setModal} total={total} />
+                    <Routes>
+                        <Route
+                            path="/main"
+                            element={
+                                <Main
+                                    cart={cart}
+                                    setCart={setCart}
+                                    total={total}
+                                    setTotal={setTotal}
+                                    modal={modal}
+                                    setModal={setModal}
+                                    addToCart={addToCart}
+                                    removeFromCart={removeFromCart}
+                                    addToFavorites={addToFavorites}
+                                    removeFromFavorites={removeFromFavorites}
+                                />
+                            }
+                            exact
+                        />
+                        <Route path="/favorites" element={<Favorites />} />
+                        <Route path="/purchases" element={<Purchases />} />
+                        <Route
+                            path="*"
+                            element={<Navigate replace to="/main" />}
+                        />
+                    </Routes>
                 </div>
-            </header>
-            <main className="main">
-                <div className="container">
-                    <h1>Все кроссовки</h1>
-                    <div className="sneakers">
-                        <div className="card">
-                            <img
-                                width={133}
-                                height={112}
-                                src="/images/sneakers/1.jpg"
-                                alt="sneakers"
-                            />
-                            <h5>Мужские Кроссовки Nike Blazer Mid Suede</h5>
-                            <div className="card__footer">
-                                <div className="card__price">
-                                    <span>Цена:</span>
-                                    <b>12 999 руб.</b>
-                                </div>
-                                <button className="card__button">
-                                    <img
-                                        width={11}
-                                        height={11}
-                                        src="/images/plus.svg"
-                                        alt="plus"
-                                    />
-                                </button>
-                            </div>
-                        </div>
-                        <div className="card">
-                            <img
-                                width={133}
-                                height={112}
-                                src="/images/sneakers/2.jpg"
-                                alt="sneakers"
-                            />
-                            <h5>Мужские Кроссовки Nike Blazer Mid Suede</h5>
-                            <div className="card__footer">
-                                <div className="card__price">
-                                    <span>Цена:</span>
-                                    <b>12 999 руб.</b>
-                                </div>
-                                <button className="card__button">
-                                    <img
-                                        width={11}
-                                        height={11}
-                                        src="/images/plus.svg"
-                                        alt="plus"
-                                    />
-                                </button>
-                            </div>
-                        </div>
-                        <div className="card">
-                            <img
-                                width={133}
-                                height={112}
-                                src="/images/sneakers/3.jpg"
-                                alt="sneakers"
-                            />
-                            <h5>Мужские Кроссовки Nike Blazer Mid Suede</h5>
-                            <div className="card__footer">
-                                <div className="card__price">
-                                    <span>Цена:</span>
-                                    <b>12 999 руб.</b>
-                                </div>
-                                <button className="card__button">
-                                    <img
-                                        width={11}
-                                        height={11}
-                                        src="/images/plus.svg"
-                                        alt="plus"
-                                    />
-                                </button>
-                            </div>
-                        </div>
-                        <div className="card">
-                            <img
-                                width={133}
-                                height={112}
-                                src="/images/sneakers/4.jpg"
-                                alt="sneakers"
-                            />
-                            <h5>Мужские Кроссовки Nike Blazer Mid Suede</h5>
-                            <div className="card__footer">
-                                <div className="card__price">
-                                    <span>Цена:</span>
-                                    <b>12 999 руб.</b>
-                                </div>
-                                <button className="card__button">
-                                    <img
-                                        width={11}
-                                        height={11}
-                                        src="/images/plus.svg"
-                                        alt="plus"
-                                    />
-                                </button>
-                            </div>
-                        </div>
-                        <div className="card">
-                            <img
-                                width={133}
-                                height={112}
-                                src="/images/sneakers/5.jpg"
-                                alt="sneakers"
-                            />
-                            <h5>Мужские Кроссовки Nike Blazer Mid Suede</h5>
-                            <div className="card__footer">
-                                <div className="card__price">
-                                    <span>Цена:</span>
-                                    <b>12 999 руб.</b>
-                                </div>
-                                <button className="card__button">
-                                    <img
-                                        width={11}
-                                        height={11}
-                                        src="/images/plus.svg"
-                                        alt="plus"
-                                    />
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </main>
-        </div>
+            </BrowserRouter>
+        </AppContext.Provider>
     )
 }
 
